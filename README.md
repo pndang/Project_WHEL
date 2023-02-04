@@ -3,4 +3,4 @@ WHEL ~ Women's Healthy Eating and Living Study ~ https://library.ucsd.edu/dc/obj
 
 This project is a part of my training in Niema Lab 
 
-Areas of focus: machine learning and exploratory data analysis aimed at precision medicine
+Areas of focus: machine learning and exploratory data analysis inspired by and aimed at precision medicine

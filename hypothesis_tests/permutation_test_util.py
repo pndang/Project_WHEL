@@ -40,9 +40,9 @@ def means_diff(df, groups, cats):
     """
         groups: the binary column
         cats: the categorical column
-    """
-
-    return df.groupby(groups)[cats].diff().abs().iloc[-1]
+    """ 
+    
+    return df.groupby(groups)[cats].mean().diff().abs().iloc[-1]
 
 
 def permutation_simulation(df, N, shuffle_column, cats_column, 
@@ -73,9 +73,6 @@ def permutation_simulation(df, N, shuffle_column, cats_column,
                             # show_steps=True if _ == 1 else False)
 
         results.append(test_stat)
-
-        # if _ % 1000 == 0:
-        #     print(test_stat)
         
     # Calculate p-value and assess null hypothesis
     if quantitative:
@@ -99,6 +96,25 @@ class FDRController():
     def __init__(self):
         pass
 
+
+    def get_pvalues(self):
+        return self.pvalues
+
+    
+    def get_qvalues(self):
+        return self.qvalues
+
+
+    def get_threshold(self):
+        return self.critical_threshold
+
+    
+    def get_results(self, reject_only=False):
+        if reject_only:
+            return self.reject
+        return self.results
+
+    
     def test(self, df, N, shuffle_column, quantitative_columns):
         
         p_values = []
@@ -115,6 +131,7 @@ class FDRController():
             )
          
             p_values.append(p_value)
+
             features.append(col)
         
         self.pvalues = p_values
@@ -128,7 +145,6 @@ class FDRController():
 
         self.results.sort_values(by='p-values', ascending=True, inplace=True)
         sorted_p = self.results['p-values'].tolist()
-        print(sorted_p)
 
         q_values = [(sorted_p[i]*self.k)/(i+1) for i in range(self.k)]
 
@@ -142,7 +158,7 @@ class FDRController():
         return None
 
     
-    def get_results(self, fdr_threshold=0.05):
+    def assess(self, fdr_threshold=0.05):
 
         critical_threshold = \
             self.results[self.results['q-values'] <= fdr_threshold]['q-values'].max()
